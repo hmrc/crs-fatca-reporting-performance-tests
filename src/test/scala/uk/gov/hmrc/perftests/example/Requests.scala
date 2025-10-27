@@ -29,7 +29,7 @@ object Requests extends ServicesConfiguration {
 
   val baseUrl: String = baseUrlFor("crs-fatca-reporting-frontend")
   val baseUrlAuth: String = baseUrlFor("auth-frontend")
-  val route: String   = "/report-for-crs-and-fatca"
+  val route: String   = "/report-for-crs-and-fatca/report/upload-file"
   val authRoute: String = "/auth-login-stub/gg-sign-in"
 
 
@@ -58,4 +58,6 @@ object Requests extends ServicesConfiguration {
     http ("Get CRSFATCA FileUpload Landing Page")
       .get("${LandingPage}")
       .check(status.is(200))
+
+
 }
