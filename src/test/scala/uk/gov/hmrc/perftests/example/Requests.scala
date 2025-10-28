@@ -23,9 +23,7 @@ import uk.gov.hmrc.performance.conf.ServicesConfiguration
 
 object Requests extends ServicesConfiguration {
 
-  val upscanTimer: Int = 25
-  val statusChecks: Int = 12
-  val refreshes: Int = 5
+
 
   val baseUrl: String = baseUrlFor("crs-fatca-reporting-frontend")
   val baseUrlAuth: String = baseUrlFor("auth-frontend")
