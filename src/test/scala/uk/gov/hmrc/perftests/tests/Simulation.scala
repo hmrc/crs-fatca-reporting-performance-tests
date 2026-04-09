@@ -45,7 +45,7 @@ class Simulation extends PerformanceTestRunner {
     postSendYourFilePage,
   )
 
-  setup("sendFile", "Sending File")
+  setup("SendFile", "Sending File")
     .withRequests(getStillCheckingYourFilePage) .withActions(getSecondStatus: _*)
 
   setup("RefreshStillCheckingYourFilePage", "Refresh Still Checking Your File Page - Success")
