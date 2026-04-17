@@ -94,6 +94,24 @@ object Requests extends ServicesConfiguration {
       .check(status.is(303))
       .check(header("location").saveAs("Status"))
 
+  val postCRSInvalidSchemaFileUpload: HttpRequestBuilder =
+    http("Post an Invalid Crs Schema error file upload")
+      .post("#{fileUploadAmazonUrl}")
+      .asMultipartForm
+      .form("#{CRSFATCAUploadForm}")
+      .bodyPart(RawFileBodyPart("file", "data/crs-schemaerrors.xml"))
+      .check(status.is(303))
+      .check(header("location").saveAs("Status"))
+
+  val postCRSInvalidBRFileUpload: HttpRequestBuilder =
+    http("Post an Invalid Crs business rules file upload")
+      .post("#{fileUploadAmazonUrl}")
+      .asMultipartForm
+      .form("#{CRSFATCAUploadForm}")
+      .bodyPart(RawFileBodyPart("file", "data/valid-crs-rules-errors-slowresponserejected-xml.xml"))
+      .check(status.is(303))
+      .check(header("location").saveAs("Status"))
+
   /*val getUploadIdSameStatus: HttpRequestBuilder =
     http("Get Same Status Page")
       .get("#{Status}")
@@ -114,6 +132,17 @@ object Requests extends ServicesConfiguration {
       .check(status.is(303))
       .check(header("Location").is(route + "/elections/report-elections").saveAs("ReportElections"))
 
+  val getValidationSchemaErrors: HttpRequestBuilder =
+    http("Get Validation - Invalid - Schema Errors")
+      .get(baseUrl + "/report-for-crs-and-fatca/file-validation")
+      .check(status.is(303))
+      .check(header("Location").is(route + "/problem/data-errors").saveAs("SchemaErrorsPage"))
+
+  val getSchemaErrorPage: HttpRequestBuilder =
+    http("get schema error page")
+      .get(baseUrl + "#{SchemaErrorsPage}")
+      .check(status.is(200))
+
   val getReportElectionsPage: HttpRequestBuilder =
     http("Get Report Elections")
       .get(baseUrl + "#{ReportElections}")
@@ -127,6 +156,14 @@ object Requests extends ServicesConfiguration {
       .formParam("value", "true")
       .check(status.is(303))
       .check(header("Location").is(route + "/elections/crs/contracts").saveAs("crsContracts"))
+
+  val postReportElectionsNoPage: HttpRequestBuilder =
+    http("post report elections-yes")
+      .post(baseUrl + "#{ReportElections}")
+      .formParam("csrfToken", "#{csrfToken}")
+      .formParam("value", "false")
+      .check(status.is(303))
+      .check(header("Location").is(route + "/check-your-file-details").saveAs("checkYourFileDetails"))
 
   val getElectionsCrsContractsPage: HttpRequestBuilder =
     http("Get CRS Contracts")
@@ -219,6 +256,19 @@ object Requests extends ServicesConfiguration {
       .check(css("a#submit", "href")
         .transform(url => url.replaceAll("/report-for-crs-and-fatca/report/file-confirmation/", ""))
         .saveAs("uuid"))
+      .check(status.is(200))
+
+  val getFileFailedChecksPage: HttpRequestBuilder =
+    http("Get file failed checks page")
+      .get(baseUrl + route + "/file-failed-checks")
+      .check(css("a#submit", "href")
+        .transform(url => url.replaceAll("/report-for-crs-and-fatca/report/problem/rules-errors/", ""))
+        .saveAs("uuid"))
+      .check(status.is(200))
+
+  val getBusinessRulesErrorsPage: HttpRequestBuilder =
+    http("Get business rules errors page")
+      .get(baseUrl + route + "/problem/rules-errors/" + "#{uuid}")
       .check(status.is(200))
 
 

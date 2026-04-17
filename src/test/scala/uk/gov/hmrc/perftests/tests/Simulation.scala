@@ -45,6 +45,27 @@ class Simulation extends PerformanceTestRunner {
     postSendYourFilePage,
   )
 
+  setup("InvalidCrsFileUpload", "Uploading an invalid CRS file for Schema errors") withRequests(
+    getUploadPage,
+    postCRSInvalidSchemaFileUpload,
+    getUploadIdStatus,
+  )
+
+  setup("InvalidCrsBusinessRulesFileUpload", "Uploading an invalid CRS file for Business rules") withRequests(
+    getUploadPage,
+    postCRSInvalidBRFileUpload,
+    getUploadIdStatus,
+    getValidation,
+    getReportElectionsPage,
+    postReportElectionsNoPage,
+    getCheckYourFileDetailsPage,
+    getSendYourFilePage,
+    postSendYourFilePage
+
+  )
+
+  setup("SchemaErrorsPage", "Get schema errors page") withRequests getSchemaErrorPage
+
   setup("SendFile", "Sending File")
     .withRequests(getStillCheckingYourFilePage) .withActions(getSecondStatus: _*)
 
@@ -52,7 +73,11 @@ class Simulation extends PerformanceTestRunner {
     .withActions(refreshOnStillCheckingYourFilePage: _*)withRequests
     getFilePassedChecksPage
 
-  setup("ConfirmationPage", "Get File Confirmation Page") withRequests(getFilePassedChecksPage,getFileConfirmationPage)
+  setup("RefreshStillCheckingYourFilePageForErrors", "Refresh Still Checking Your File Page - Failed")
+    .withActions(refreshOnStillCheckingYourFilePage: _*)withRequests(getFileFailedChecksPage)
 
+  setup("RuleErrorsPage", "get rules-errors page")withRequests(getFileFailedChecksPage, getBusinessRulesErrorsPage)
+
+  setup("ConfirmationPage", "Get File Confirmation Page") withRequests(getFilePassedChecksPage,getFileConfirmationPage)
   runSimulation()
 }
