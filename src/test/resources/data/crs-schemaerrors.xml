@@ -1,0 +1,156 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<crs:CRS_OECD xmlns:crs="urn:oecd:ties:crs:v3" xmlns:sfa="urn:oecd:ties:isocrstypes:v1" xmlns:cfc="urn:oecd:ties:commontypesfatcacrs:v2" xmlns:stf="urn:oecd:ties:crsstf:v5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:oecd:ties:crs:v3 CrsXML_v3.0.xsd urn:oecd:ties:isocrstypes:v1 isocrstypes_v1.1.xsd urn:oecd:ties:crsstf:v5 oecdcrstypes_v5.0.xsd urn:oecd:ties:commontypesfatcacrs:v2 CommonTypesFatcaCrs_v2.0.xsd urn:oecd:ties:fatca:v1 FatcaTypes_v1.2.xsd" version="">
+    <crs:MessageSpec>
+        
+        <crs:TransmittingCountry>GBO</crs:TransmittingCountry>
+        <crs:ReceivingCountry></crs:ReceivingCountry>
+        <crs:MessageType>CRS</crs:MessageType>
+        <crs:Warning></crs:Warning>
+        <crs:Contact></crs:Contact>
+        <crs:MessageRefId></crs:MessageRefId>
+        <crs:MessageTypeIndic>CRS70</crs:MessageTypeIndic>
+        <crs:ReportingPeriod></crs:ReportingPeriod>
+        <crs:Timestamp></crs:Timestamp>
+    </crs:MessageSpec>
+    <crs:CrsBody>
+        <crs:ReportingFI>
+            <crs:ResCountryCode>GBP</crs:ResCountryCode>
+            <crs:IN issuedBy="" INType=""></crs:IN>
+            <crs:Name nameType=""></crs:Name>
+            <crs:Address legalAddressType="">
+                <cfc:CountryCode></cfc:CountryCode>
+                <cfc:AddressFix>
+                    <cfc:Street></cfc:Street>
+                    <cfc:BuildingIdentifier></cfc:BuildingIdentifier>
+                    <cfc:SuiteIdentifier></cfc:SuiteIdentifier>
+                    <cfc:FloorIdentifier></cfc:FloorIdentifier>
+                    <cfc:DistrictName></cfc:DistrictName>
+                    <cfc:POB></cfc:POB>
+                    <cfc:PostCode></cfc:PostCode>
+                    <cfc:City></cfc:City>
+                    <cfc:CountrySubentity></cfc:CountrySubentity>
+                </cfc:AddressFix>
+                <cfc:AddressFree></cfc:AddressFree>
+            </crs:Address>
+            <crs:DocSpec>
+                <stf:DocTypeIndic>OECD15</stf:DocTypeIndic>
+                <stf:DocRefId></stf:DocRefId>
+                <stf:CorrMessageRefId></stf:CorrMessageRefId>
+            </crs:DocSpec>
+        </crs:ReportingFI>
+        <crs:ReportingGroup>
+            <crs:Sponsor>
+                <crs:Name></crs:Name>
+                <crs:Address>
+                    <cfc:CountryCode></cfc:CountryCode>
+                    <cfc:AddressFree>ABC</cfc:AddressFree>
+                </crs:Address>
+                <crs:DocSpec>
+                    <stf:DocTypeIndic>OECD10</stf:DocTypeIndic>
+                    <stf:DocRefId>OECD10</stf:DocRefId>
+                </crs:DocSpec>
+            </crs:Sponsor>
+            <crs:Intermediary>
+                <crs:Name>ABC</crs:Name>
+                <crs:Address>
+                    <cfc:CountryCode>GB</cfc:CountryCode>
+                    <cfc:AddressFree>ABC</cfc:AddressFree>
+                </crs:Address>
+                <crs:DocSpec>
+                    <stf:DocTypeIndic>OECD10</stf:DocTypeIndic>
+                    <stf:DocRefId>OECD10</stf:DocRefId>
+                </crs:DocSpec>
+            </crs:Intermediary>
+            <crs:AccountReport>
+                <crs:DocSpec>
+                    <stf:DocTypeIndic>OECD15</stf:DocTypeIndic>
+                    <stf:DocRefId></stf:DocRefId>
+                </crs:DocSpec>
+                <crs:AccountNumber AcctNumberType="" UndocumentedAccount="" ClosedAccount="" DormantAccount=""></crs:AccountNumber>
+                <crs:AccountHolder>
+                    <crs:EquityInterestType>CRS300</crs:EquityInterestType>
+                    <crs:SelfCert></crs:SelfCert>
+                    <crs:Organisation>
+                        <crs:ResCountryCode></crs:ResCountryCode>
+                        <crs:IN issuedBy="" INType=""></crs:IN>
+                        <crs:Name nameType=""></crs:Name>
+                        <crs:Address legalAddressType="">
+                            <cfc:CountryCode></cfc:CountryCode>
+                            <cfc:AddressFix>
+                                <cfc:Street></cfc:Street>
+                                <cfc:BuildingIdentifier></cfc:BuildingIdentifier>
+                                <cfc:SuiteIdentifier></cfc:SuiteIdentifier>
+                                <cfc:FloorIdentifier></cfc:FloorIdentifier>
+                                <cfc:DistrictName></cfc:DistrictName>
+                                <cfc:POB></cfc:POB>
+                                <cfc:PostCode></cfc:PostCode>
+                                <cfc:City></cfc:City>
+                                <cfc:CountrySubentity></cfc:CountrySubentity>
+                            </cfc:AddressFix>
+                            <cfc:AddressFree></cfc:AddressFree>
+                        </crs:Address>
+                    </crs:Organisation>
+                    <crs:AcctHolderType></crs:AcctHolderType>
+                </crs:AccountHolder>
+                <crs:ControllingPerson>
+                    <crs:Individual>
+                        <crs:ResCountryCode></crs:ResCountryCode>
+                        <crs:TIN issuedBy=""></crs:TIN>
+                        <crs:Name nameType="">
+                            <crs:Title></crs:Title>
+                            <crs:FirstName xnlNameType=""></crs:FirstName>
+                            <crs:MiddleName xnlNameType=""></crs:MiddleName>
+                            <crs:LastName xnlNameType=""></crs:LastName>
+                            <crs:Suffix></crs:Suffix>
+                            <crs:GeneralSuffix></crs:GeneralSuffix>
+                        </crs:Name>
+                        <crs:Address legalAddressType="">
+                            <cfc:CountryCode></cfc:CountryCode>
+                            <cfc:AddressFix>
+                                <cfc:Street></cfc:Street>
+                                <cfc:BuildingIdentifier></cfc:BuildingIdentifier>
+                                <cfc:SuiteIdentifier></cfc:SuiteIdentifier>
+                                <cfc:FloorIdentifier></cfc:FloorIdentifier>
+                                <cfc:DistrictName></cfc:DistrictName>
+                                <cfc:POB></cfc:POB>
+                                <cfc:PostCode></cfc:PostCode>
+                                <cfc:City></cfc:City>
+                                <cfc:CountrySubentity></cfc:CountrySubentity>
+                            </cfc:AddressFix>
+                            <cfc:AddressFree></cfc:AddressFree>
+                        </crs:Address>
+                        <crs:BirthInfo>
+                            <crs:BirthDate></crs:BirthDate>
+                            <crs:City></crs:City>
+                            <crs:CitySubentity></crs:CitySubentity>
+                            <crs:CountryInfo>
+                                <crs:FormerCountryName></crs:FormerCountryName>
+                            </crs:CountryInfo>
+                        </crs:BirthInfo>
+                    </crs:Individual>
+                    <crs:CtrlgPersonType></crs:CtrlgPersonType>
+                    <crs:SelfCert></crs:SelfCert>
+                </crs:ControllingPerson>
+                <crs:AccountBalance currCode=""></crs:AccountBalance>
+                <crs:Payment>
+                    <crs:Type></crs:Type>
+                    <crs:PaymentAmnt currCode=""></crs:PaymentAmnt>
+                </crs:Payment>
+                <crs:DDProcedure></crs:DDProcedure>
+                <crs:AccountType></crs:AccountType>
+                <crs:JointAccount>
+                    <crs:Number></crs:Number>
+                </crs:JointAccount>
+            </crs:AccountReport>
+            <crs:PoolReport>
+                <DocSpec>
+                    <stf:DocTypeIndic></stf:DocTypeIndic>
+                    <stf:DocRefId></stf:DocRefId>
+                </DocSpec>
+                <AccountCount></AccountCount>
+                <AccountPoolReportType></AccountPoolReportType>
+                <PoolBalance currCode=""></PoolBalance>
+            </crs:PoolReport>
+        </crs:ReportingGroup>
+    </crs:CrsBody>
+</crs:CRS_OECD>
