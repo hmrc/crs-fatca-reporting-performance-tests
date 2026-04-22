@@ -21,16 +21,18 @@ import uk.gov.hmrc.perftests.tests.Requests._
 
 class Simulation extends PerformanceTestRunner {
 
-  setup("AuthLogin", "Logging in via Auth") withRequests (
+  setup("AuthLogin", "Logging in via Auth").withActions(
     getAuthLoginPage,
-    postAuthLoginDetails,
-
+    postAuthLoginDetails
   )
 
-  setup("ValidCRSFileUpload", "Uploading a valid CRS file") withRequests(
+  setup("ValidCRSFileUpload", "Uploading a valid CRS file").withActions(
     getUploadPage,
     postCRSValidFileUpload,
-    getUploadIdStatus,
+    getUploadIdStatus
+  )
+    .withActions(pollUntilValidated: _*)
+    .withActions(
     getValidation,
     getReportElectionsPage,
     postReportElectionsYesPage,
@@ -42,42 +44,71 @@ class Simulation extends PerformanceTestRunner {
     postElectionsCrsThresholdsPage,
     getCheckYourFileDetailsPage,
     getSendYourFilePage,
-    postSendYourFilePage,
+    postSendYourFilePage
   )
 
-  setup("InvalidCrsFileUpload", "Uploading an invalid CRS file for Schema errors") withRequests(
-    getUploadPage,
-    postCRSInvalidSchemaFileUpload,
-    getUploadIdStatus,
+  setup("SendFile", "Sending File")
+    .withActions(
+      getStillCheckingYourFilePage
+    )
+    .withActions(
+      getSecondStatus: _*
+    )
+
+  setup("RefreshStillCheckingYourFilePage", "Refresh Still Checking Your File Page - Success")
+    .withActions(
+      refreshOnStillCheckingYourFilePage: _*
+    )
+    .withActions(
+      getFilePassedChecksPage
+    )
+
+  setup("ConfirmationPage", "Get File Confirmation Page").withActions(
+    getFilePassedChecksPage,
+    getFileConfirmationPage
   )
 
-  setup("InvalidCrsBusinessRulesFileUpload", "Uploading an invalid CRS file for Business rules") withRequests(
+  setup("InvalidCrsBusinessRulesFileUpload", "Uploading an invalid CRS file for Business rules").withActions(
     getUploadPage,
     postCRSInvalidBRFileUpload,
-    getUploadIdStatus,
+    getUploadIdStatus
+  )
+    .withActions(pollUntilValidated: _*)
+    .withActions(
     getValidation,
     getReportElectionsPage,
     postReportElectionsNoPage,
     getCheckYourFileDetailsPage,
     getSendYourFilePage,
     postSendYourFilePage
-
   )
 
-  setup("SchemaErrorsPage", "Get schema errors page") withRequests getSchemaErrorPage
-
-  setup("SendFile", "Sending File")
-    .withRequests(getStillCheckingYourFilePage) .withActions(getSecondStatus: _*)
-
-  setup("RefreshStillCheckingYourFilePage", "Refresh Still Checking Your File Page - Success")
-    .withActions(refreshOnStillCheckingYourFilePage: _*)withRequests
-    getFilePassedChecksPage
-
   setup("RefreshStillCheckingYourFilePageForErrors", "Refresh Still Checking Your File Page - Failed")
-    .withActions(refreshOnStillCheckingYourFilePage: _*)withRequests(getFileFailedChecksPage)
+    .withActions(
+      refreshOnStillCheckingYourFilePage: _*
+    )
+    .withActions(
+      getFileFailedChecksPage
+    )
 
-  setup("RuleErrorsPage", "get rules-errors page")withRequests(getFileFailedChecksPage, getBusinessRulesErrorsPage)
+  setup("RuleErrorsPage", "get rules-errors page").withActions(
+    getFileFailedChecksPage,
+    getBusinessRulesErrorsPage
+  )
 
-  setup("ConfirmationPage", "Get File Confirmation Page") withRequests(getFilePassedChecksPage,getFileConfirmationPage)
+  setup("InvalidCrsFileUpload", "Uploading an invalid CRS file for Schema errors").withActions(
+    getUploadPage,
+    postCRSInvalidSchemaFileUpload,
+    getUploadIdStatus
+    )
+    .withActions(pollUntilValidated: _*)
+    .withActions(
+      getValidationRedirect
+  )
+
+  setup("SchemaErrorsPage", "Get schema errors page").withActions(
+      getSchemaErrorPage
+    )
+
   runSimulation()
 }

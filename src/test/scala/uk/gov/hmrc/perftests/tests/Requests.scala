@@ -24,7 +24,6 @@ import io.gatling.core.structure.ChainBuilder
 import io.gatling.http.Predef._
 import io.gatling.http.request.builder.HttpRequestBuilder
 import io.gatling.core.session.Expression
-import io.gatling.http.check.header.HttpHeaderRegexCheckType
 import uk.gov.hmrc.performance.conf.ServicesConfiguration
 
 import scala.concurrent.duration.DurationInt
@@ -42,7 +41,6 @@ object Requests extends ServicesConfiguration {
   val amazonUrlPattern    = """action="(.*?)""""
 
   def inputSelectionByName(name: String): Expression[String] = s"input[name='$name']"
-
 
   val getAuthLoginPage: HttpRequestBuilder =
     http("Get Auth login page")
@@ -63,11 +61,6 @@ object Requests extends ServicesConfiguration {
       .formParam("enrolment[0].state", "Activated")
       .check(status.is(303))
       .check(header("Location").is(baseUrl + route).saveAs("LandingPage"))
-
-  /*val getCRSFATCAFileUploadLandingPage: HttpRequestBuilder =
-    http("Get CRSFATCA FileUpload Landing Page")
-      .get("#{LandingPage}")
-      .check(status.is(200))*/
 
   val getUploadPage: HttpRequestBuilder =
     http("Get Upload an XML file")
@@ -112,19 +105,31 @@ object Requests extends ServicesConfiguration {
       .check(status.is(303))
       .check(header("location").saveAs("Status"))
 
-  /*val getUploadIdSameStatus: HttpRequestBuilder =
-    http("Get Same Status Page")
-      .get("#{Status}")
-      .check(status.is(303))*/
-
   val getUploadIdStatus: HttpRequestBuilder =
     http("Get Status Page")
       .get("#{Status}")
       .check(status.is(303))
-  /*while (getUploadIdSameStatus.toString contains "/status") {
-    getUploadIdSameStatus
-  }*/
-    .check(header("Location").is("/report-for-crs-and-fatca/file-validation"))
+      .check(header("Location").saveAs("validationRedirect"))
+
+  val pollUntilValidated: List[ActionBuilder] =
+    asLongAsDuring(
+      session => session("validationRedirect").as[String].contains("status"),
+      upscanTimer.seconds
+    ) {
+      exec(
+        http("Poll Status")
+          .get("#{Status}")
+          .check(status.is(303))
+          .check(header("Location").saveAs("validationRedirect"))
+          .silent
+      ).pause(3.seconds)
+    }.actionBuilders
+
+  val getValidationRedirect: HttpRequestBuilder =
+    http("Get Validation Redirect")
+      .get(baseUrl + "#{validationRedirect}")
+      .check(status.in(200, 303))
+      .check(header("Location").optional.saveAs("finalRedirect"))
 
   val getValidation: HttpRequestBuilder =
     http("Get Validation - Valid")
@@ -140,8 +145,9 @@ object Requests extends ServicesConfiguration {
 
   val getSchemaErrorPage: HttpRequestBuilder =
     http("get schema error page")
-      .get(baseUrl + "#{SchemaErrorsPage}")
-      .check(status.is(200))
+      .get(s"$baseUrl$route/problem/data-errors")
+      .check(status.in(200) )
+      .check(bodyString.saveAs("errorPageBody"))
 
   val getReportElectionsPage: HttpRequestBuilder =
     http("Get Report Elections")
@@ -230,7 +236,7 @@ object Requests extends ServicesConfiguration {
       exec(
         http("check the status")
           .get(baseUrl + "/report-for-crs-and-fatca/check-status")
-          .check(status.in(200,204))
+          .check(status.in(200, 204))
       )
         .pause(3)
     }.actionBuilders
@@ -240,7 +246,7 @@ object Requests extends ServicesConfiguration {
       .get(baseUrl + route + "/still-checking-your-file")
       .check(status.is(200))
 
-  val refreshOnStillCheckingYourFilePage: List[ActionBuilder]=
+  val refreshOnStillCheckingYourFilePage: List[ActionBuilder] =
     repeat(refreshes) {
       exec(
         http("get still checking your file page")
@@ -253,17 +259,21 @@ object Requests extends ServicesConfiguration {
   val getFilePassedChecksPage: HttpRequestBuilder =
     http("Get file passed checks page")
       .get(baseUrl + route + "/file-passed-checks")
-      .check(css("a#submit", "href")
-        .transform(url => url.replaceAll("/report-for-crs-and-fatca/report/file-confirmation/", ""))
-        .saveAs("uuid"))
+      .check(
+        css("a#submit", "href")
+          .transform(url => url.replaceAll("/report-for-crs-and-fatca/report/file-confirmation/", ""))
+          .saveAs("uuid")
+      )
       .check(status.is(200))
 
   val getFileFailedChecksPage: HttpRequestBuilder =
     http("Get file failed checks page")
       .get(baseUrl + route + "/file-failed-checks")
-      .check(css("a#submit", "href")
-        .transform(url => url.replaceAll("/report-for-crs-and-fatca/report/problem/rules-errors/", ""))
-        .saveAs("uuid"))
+      .check(
+        css("a#submit", "href")
+          .transform(url => url.replaceAll("/report-for-crs-and-fatca/report/problem/rules-errors/", ""))
+          .saveAs("uuid")
+      )
       .check(status.is(200))
 
   val getBusinessRulesErrorsPage: HttpRequestBuilder =
@@ -271,13 +281,10 @@ object Requests extends ServicesConfiguration {
       .get(baseUrl + route + "/problem/rules-errors/" + "#{uuid}")
       .check(status.is(200))
 
-
   val getFileConfirmationPage: HttpRequestBuilder =
     http("Get file confirmation page")
       .get(baseUrl + route + "/file-confirmation/" + "#{uuid}")
       .check(status.is(200))
-
-
 
   def saveFileUploadUrl: CheckBuilder[RegexCheckType, String] =
     regex(_ => amazonUrlPattern).saveAs("fileUploadAmazonUrl")
