@@ -29,7 +29,10 @@ class Simulation extends PerformanceTestRunner {
   setup("ValidCRSFileUpload", "Uploading a valid CRS file").withActions(
     getUploadPage,
     postCRSValidFileUpload,
-    getUploadIdStatus,
+    getUploadIdStatus
+  )
+    .withActions(pollUntilValidated: _*)
+    .withActions(
     getValidation,
     getReportElectionsPage,
     postReportElectionsYesPage,
@@ -68,7 +71,10 @@ class Simulation extends PerformanceTestRunner {
   setup("InvalidCrsBusinessRulesFileUpload", "Uploading an invalid CRS file for Business rules").withActions(
     getUploadPage,
     postCRSInvalidBRFileUpload,
-    getUploadIdStatus,
+    getUploadIdStatus
+  )
+    .withActions(pollUntilValidated: _*)
+    .withActions(
     getValidation,
     getReportElectionsPage,
     postReportElectionsNoPage,
