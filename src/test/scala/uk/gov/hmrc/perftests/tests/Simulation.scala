@@ -93,13 +93,16 @@ class Simulation extends PerformanceTestRunner {
   setup("InvalidCrsFileUpload", "Uploading an invalid CRS file for Schema errors").withActions(
     getUploadPage,
     postCRSInvalidSchemaFileUpload,
-    getUploadIdStatus,
-    getValidationRedirect
+    getUploadIdStatus
+    )
+    .withActions(pollUntilValidated: _*)
+    .withActions(
+      getValidationRedirect
   )
 
   setup("SchemaErrorsPage", "Get schema errors page").withActions(
-    getSchemaErrorPage
-  )
+      getSchemaErrorPage
+    )
 
   runSimulation()
 }

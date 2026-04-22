@@ -111,6 +111,20 @@ object Requests extends ServicesConfiguration {
       .check(status.is(303))
       .check(header("Location").saveAs("validationRedirect"))
 
+  val pollUntilValidated: List[ActionBuilder] =
+    asLongAsDuring(
+      session => session("validationRedirect").as[String].contains("status"),
+      upscanTimer.seconds
+    ) {
+      exec(
+        http("Poll Status")
+          .get("#{Status}")
+          .check(status.is(303))
+          .check(header("Location").saveAs("validationRedirect"))
+          .silent
+      ).pause(3.seconds)
+    }.actionBuilders
+
   val getValidationRedirect: HttpRequestBuilder =
     http("Get Validation Redirect")
       .get(baseUrl + "#{validationRedirect}")
