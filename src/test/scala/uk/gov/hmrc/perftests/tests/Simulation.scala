@@ -26,26 +26,47 @@ class Simulation extends PerformanceTestRunner {
     postAuthLoginDetails
   )
 
-  setup("ValidCRSFileUpload", "Uploading a valid CRS file").withActions(
-    getUploadPage,
-    postCRSValidFileUpload,
-    getUploadIdStatus
-  )
+  setup("ValidCRSFileUpload", "Uploading a valid CRS file")
+    .withActions(
+      getUploadPage,
+      postCRSValidFileUpload,
+      getUploadIdStatus
+    )
     .withActions(pollUntilValidated: _*)
     .withActions(
-    getValidation,
-    getReportElectionsPage,
-    postReportElectionsYesPage,
-    getElectionsCrsContractsPage,
-    postElectionsCrsContractsPage,
-    getElectionsCrsDormantAccountsPage,
-    postElectionsCrsDormantAccountsPage,
-    getElectionsCrsThresholdsPage,
-    postElectionsCrsThresholdsPage,
-    getCheckYourFileDetailsPage,
-    getSendYourFilePage,
-    postSendYourFilePage
-  )
+      getValidation,
+      getReportElectionsPage,
+      postReportElectionsYesPage,
+      getElectionsCrsContractsPage,
+      postElectionsCrsContractsPage,
+      getElectionsCrsDormantAccountsPage,
+      postElectionsCrsDormantAccountsPage,
+      getElectionsCrsThresholdsPage,
+      postElectionsCrsThresholdsPage,
+      getCheckYourFileDetailsPage,
+      getSendYourFilePage,
+      postSendYourFilePage
+    )
+  setup("ValidFATCAFileUpload", "Uploading a valid FATCA file")
+    .withActions(
+      getUploadPage,
+      postFATCAValidFileUpload,
+      getUploadIdStatus
+    )
+    .withActions(pollUntilValidated: _*)
+    .withActions(
+      getValidation,
+      getReportElectionsPage,
+      postFatcaReportElectionsYesPage,
+      getUSTreasuryRegulationsPage,
+      postUSTreasuryRegulationsPage,
+      getFatcaThresholdsPage,
+      postFatcaThresholdsPage,
+      getCheckYourFileDetailsPage,
+      getSendYourFilePage,
+      getElectionsNotSentPage,
+      postElectionsNotSentPage
+    )
 
   setup("SendFile", "Sending File")
     .withActions(
@@ -68,20 +89,21 @@ class Simulation extends PerformanceTestRunner {
     getFileConfirmationPage
   )
 
-  setup("InvalidCrsBusinessRulesFileUpload", "Uploading an invalid CRS file for Business rules").withActions(
-    getUploadPage,
-    postCRSInvalidBRFileUpload,
-    getUploadIdStatus
-  )
+  setup("InvalidCrsBusinessRulesFileUpload", "Uploading an invalid CRS file for Business rules")
+    .withActions(
+      getUploadPage,
+      postCRSInvalidBRFileUpload,
+      getUploadIdStatus
+    )
     .withActions(pollUntilValidated: _*)
     .withActions(
-    getValidation,
-    getReportElectionsPage,
-    postReportElectionsNoPage,
-    getCheckYourFileDetailsPage,
-    getSendYourFilePage,
-    postSendYourFilePage
-  )
+      getValidation,
+      getReportElectionsPage,
+      postReportElectionsNoPage,
+      getCheckYourFileDetailsPage,
+      getSendYourFilePage,
+      postSendYourFilePage
+    )
 
   setup("RefreshStillCheckingYourFilePageForErrors", "Refresh Still Checking Your File Page - Failed")
     .withActions(
@@ -96,19 +118,20 @@ class Simulation extends PerformanceTestRunner {
     getBusinessRulesErrorsPage
   )
 
-  setup("InvalidCrsFileUpload", "Uploading an invalid CRS file for Schema errors").withActions(
-    getUploadPage,
-    postCRSInvalidSchemaFileUpload,
-    getUploadIdStatus
+  setup("InvalidCrsFileUpload", "Uploading an invalid CRS file for Schema errors")
+    .withActions(
+      getUploadPage,
+      postCRSInvalidSchemaFileUpload,
+      getUploadIdStatus
     )
     .withActions(pollUntilValidated: _*)
     .withActions(
       getValidationRedirect
-  )
+    )
 
   setup("SchemaErrorsPage", "Get schema errors page").withActions(
-      getSchemaErrorPage
-    )
+    getSchemaErrorPage
+  )
 
   runSimulation()
 }
