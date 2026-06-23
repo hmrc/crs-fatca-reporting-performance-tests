@@ -20,10 +20,10 @@ import io.gatling.core.Predef._
 import io.gatling.core.action.builder.ActionBuilder
 import io.gatling.core.check.CheckBuilder
 import io.gatling.core.check.regex.RegexCheckType
+import io.gatling.core.session.Expression
 import io.gatling.core.structure.ChainBuilder
 import io.gatling.http.Predef._
 import io.gatling.http.request.builder.HttpRequestBuilder
-import io.gatling.core.session.Expression
 import uk.gov.hmrc.performance.conf.ServicesConfiguration
 
 import scala.concurrent.duration.DurationInt
@@ -57,7 +57,7 @@ object Requests extends ServicesConfiguration {
       .formParam("affinityGroup", "Organisation")
       .formParam("enrolment[0].name", "HMRC-FATCA-ORG")
       .formParam("enrolment[0].taxIdentifier[0].name", "FATCAID")
-      .formParam("enrolment[0].taxIdentifier[0].value", "XE2ATCA0009234567")
+      .formParam("enrolment[0].taxIdentifier[0].value", "2009234567")
       .formParam("enrolment[0].state", "Activated")
       .check(status.is(303))
       .check(header("Location").is(baseUrl + route).saveAs("LandingPage"))
@@ -83,7 +83,7 @@ object Requests extends ServicesConfiguration {
       .post("#{fileUploadAmazonUrl}")
       .asMultipartForm
       .form("#{CRSFATCAUploadForm}")
-      .bodyPart(RawFileBodyPart("file", "data/valid-fatca-fastresponseaccepted-xml.xml"))
+      .bodyPart(RawFileBodyPart("file", "data/valid-fatca-elections-not-sent-slowresponseaccepted-xml.xml"))
       .check(status.is(303))
       .check(header("location").saveAs("Status"))
 
@@ -146,7 +146,7 @@ object Requests extends ServicesConfiguration {
   val getSchemaErrorPage: HttpRequestBuilder =
     http("get schema error page")
       .get(s"$baseUrl$route/problem/data-errors")
-      .check(status.in(200) )
+      .check(status.in(200))
       .check(bodyString.saveAs("errorPageBody"))
 
   val getReportElectionsPage: HttpRequestBuilder =
@@ -163,6 +163,16 @@ object Requests extends ServicesConfiguration {
       .check(status.is(303))
       .check(header("Location").is(route + "/elections/crs/contracts").saveAs("crsContracts"))
 
+  val postFatcaReportElectionsYesPage: HttpRequestBuilder =
+    http("post report elections-yes")
+      .post(baseUrl + "#{ReportElections}")
+      .formParam("csrfToken", "#{csrfToken}")
+      .formParam("value", "true")
+      .check(status.is(303))
+      .check(
+        header("Location").is(route + "/elections/fatca/us-treasury-regulations").saveAs("fatcaUSTreasuryRegulation")
+      )
+
   val postReportElectionsNoPage: HttpRequestBuilder =
     http("post report elections-yes")
       .post(baseUrl + "#{ReportElections}")
@@ -177,6 +187,12 @@ object Requests extends ServicesConfiguration {
       .check(status.is(200))
       .check(css(inputSelectionByName("csrfToken"), "value").saveAs("csrfToken"))
 
+  val getUSTreasuryRegulationsPage: HttpRequestBuilder =
+    http("Get US Treasury Regulations")
+      .get(baseUrl + "#{fatcaUSTreasuryRegulation}")
+      .check(status.is(200))
+      .check(css(inputSelectionByName("csrfToken"), "value").saveAs("csrfToken"))
+
   val postElectionsCrsContractsPage: HttpRequestBuilder =
     http("post crs contracts-yes")
       .post(baseUrl + "#{crsContracts}")
@@ -185,9 +201,24 @@ object Requests extends ServicesConfiguration {
       .check(status.is(303))
       .check(header("Location").is(route + "/elections/crs/dormant-accounts").saveAs("crsDormantAccounts"))
 
+  val postUSTreasuryRegulationsPage: HttpRequestBuilder=
+    http("Post FATCA US Treasury Regulations-yes")
+      .post(baseUrl + "#{fatcaUSTreasuryRegulation}")
+      .formParam("csrfToken", "#{csrfToken}")
+      .formParam("value", "true")
+      .check(status.is(303))
+      .check(header("Location").is(route + "/elections/fatca/thresholds").saveAs("fatcaThresholds"))
+
+
   val getElectionsCrsDormantAccountsPage: HttpRequestBuilder =
     http("Get CRS Dormant Accounts")
       .get(baseUrl + "#{crsDormantAccounts}")
+      .check(status.is(200))
+      .check(css(inputSelectionByName("csrfToken"), "value").saveAs("csrfToken"))
+
+  val getFatcaThresholdsPage: HttpRequestBuilder =
+    http("Get Fatca Thresholds page")
+      .get(baseUrl + "#{fatcaThresholds}")
       .check(status.is(200))
       .check(css(inputSelectionByName("csrfToken"), "value").saveAs("csrfToken"))
 
@@ -198,6 +229,15 @@ object Requests extends ServicesConfiguration {
       .formParam("value", "true")
       .check(status.is(303))
       .check(header("Location").is(route + "/elections/crs/thresholds").saveAs("crsThresholds"))
+
+  val postFatcaThresholdsPage: HttpRequestBuilder =
+    http("Get Fatca Thresholds - yes")
+      .post(baseUrl + "#{fatcaThresholds}")
+      .formParam("csrfToken", "#{csrfToken}")
+      .formParam("value", "true")
+      .check(status.is(303))
+      .check(header("Location").is(route+"/check-your-file-details").saveAs("checkYourFileDetails"))
+
 
   val getElectionsCrsThresholdsPage: HttpRequestBuilder =
     http("Get CRS Thresholds")
@@ -224,12 +264,27 @@ object Requests extends ServicesConfiguration {
       .check(css(inputSelectionByName("csrfToken"), "value").saveAs("csrfToken"))
       .check(status.is(200))
 
+  val getElectionsNotSentPage: HttpRequestBuilder =
+    http("Get Elections Not Sent Page")
+      .get(baseUrl + route +"/problem/elections-not-sent")
+      .check(css(inputSelectionByName("csrfToken"), "value").saveAs("csrfToken"))
+      .check(status.is(200))
+
   val postSendYourFilePage: HttpRequestBuilder =
     http("Post send your file page")
       .post(baseUrl + route + "/send-your-file")
       .formParam("csrfToken", "#{csrfToken}")
       .check(status.is(303))
       .check(header("Location").is(route + "/still-checking-your-file").saveAs("stillCheckingYourFile"))
+
+
+  val postElectionsNotSentPage: HttpRequestBuilder =
+    http("Post elections not set page")
+      .post(baseUrl + route + "/problem/elections-not-sent")
+      .formParam("csrfToken", "#{csrfToken}")
+      .check(status.is(303))
+      .check(header("Location").is(route + "/still-checking-your-file").saveAs("stillCheckingYourFile"))
+
 
   val getSecondStatus: List[ActionBuilder] =
     repeat(statusChecks) {
